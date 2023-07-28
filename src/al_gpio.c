@@ -1,54 +1,25 @@
-/* Copyright 2022, Adan Lema <adanlema@hotmail.com>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+/* Copyright 2023, Adan Lema <adanlema@hotmail.com>
 
 /** \brief HAL_GPIO
  ** \brief Implementacion de las funciones de una HAL_GPIO
  ** @{ */
 /*==================[inclusions]=============================================*/
-#include "chip.h"
 #include <stdbool.h>
 #include "al_gpio.h"
 /*==================[macros and definitions]=================================*/
 #define CANTIDAD 20
 
 struct DigitalInput_s {
-    uint8_t port;
-    uint8_t pin;
-    bool    inverted;
-    bool    last_state;
-    bool    ocupado;
+    gpio_t   port;
+    uint32_t pin;
+    bool     inverted;
+    bool     last_state;
+    bool     ocupado;
 };
 struct DigitalOutput_s {
-    uint8_t port;
-    uint8_t pin;
-    bool    ocupado;
+    gpio_t   port;
+    uint32_t pin;
+    bool     ocupado;
 };
 
 /*==================[internal data declaration]==============================*/
@@ -65,85 +36,83 @@ static struct DigitalOutput_s Output[CANTIDAD] = {0};
 /*==================[external functions definition]==========================*/
 
 /* Funciones para las Entradas */
-DigitalInput_t DigitalInput_Create(uint8_t port, uint8_t pin, bool inverted) {
+DigitalInput_t DigitalInput_Create(gpio_t port, uint8_t pin, bool inverted) {
     uint8_t posicion = 0;
     for (int i = 0; (i < CANTIDAD) & (posicion == 0); i++) {
         if (Input[i].ocupado == false)
             posicion = i;
     }
-    DigitalInput_t AL = &Input[posicion];
-    AL->port          = port;
-    AL->pin           = pin;
-    AL->inverted      = inverted;
-    AL->ocupado       = true;
-    Chip_GPIO_SetPinDIR(LPC_GPIO_PORT, port, pin, false);
-    return AL;
+    DigitalInput_t self = &Input[posicion];
+    self->port          = port;
+    self->pin           = pin;
+    self->inverted      = inverted;
+    self->ocupado       = true;
+    return self;
 }
-bool DigitalInput_GetState(DigitalInput_t AL) {
-    if (AL->inverted == 0)
-        return Chip_GPIO_ReadPortBit(LPC_GPIO_PORT, AL->port, AL->pin);
+bool DigitalInput_GetState(DigitalInput_t self) {
+    if (self->inverted == 0)
+        return (self->port->IDR & (1 << self->pin));
     else
-        return !(Chip_GPIO_ReadPortBit(LPC_GPIO_PORT, AL->port, AL->pin));
+        return !(self->port->IDR & (1 << self->pin));
 }
-bool DigitalInput_HasChange(DigitalInput_t AL) {
-    bool current_state = DigitalInput_GetState(AL);
+bool DigitalInput_HasChange(DigitalInput_t self) {
+    bool current_state = DigitalInput_GetState(self);
     bool resultado;
-    if (current_state != AL->last_state)
+    if (current_state != self->last_state)
         resultado = true;
     else
         resultado = false;
-    AL->last_state = current_state;
+    self->last_state = current_state;
     return resultado;
 }
-bool DigitalInput_HasActivate(DigitalInput_t AL) {
-    bool current_state = DigitalInput_GetState(AL);
+bool DigitalInput_HasActivate(DigitalInput_t self) {
+    bool current_state = DigitalInput_GetState(self);
     bool resultado;
-    if ((0 == AL->last_state) & (1 == current_state))
+    if ((0 == self->last_state) & (1 == current_state))
         resultado = true;
     else
         resultado = false;
-    AL->last_state = current_state;
+    self->last_state = current_state;
     return resultado;
 }
-bool DigitalInput_HasDesactivate(DigitalInput_t AL) {
-    bool current_state = DigitalInput_GetState(AL);
+bool DigitalInput_HasDesactivate(DigitalInput_t self) {
+    bool current_state = DigitalInput_GetState(self);
     bool resultado;
-    if ((1 == AL->last_state) & (0 == current_state))
+    if ((1 == self->last_state) & (0 == current_state))
         resultado = true;
     else
         resultado = false;
-    AL->last_state = current_state;
+    self->last_state = current_state;
     return resultado;
 }
 
 /* Funciones para las Salidas */
-DigitalOutput_t DigitalOutput_Create(uint8_t port, uint8_t pin) {
+DigitalOutput_t DigitalOutput_Create(gpio_t port, uint8_t pin) {
     uint8_t posicion = 0;
     for (int i = 0; (i < CANTIDAD) & (posicion == 0); i++) {
         if (Output[i].ocupado == false)
             posicion = i;
     }
-    DigitalOutput_t AL = &Output[posicion];
-    AL->port           = port;
-    AL->pin            = pin;
-    AL->ocupado        = true;
-    Chip_GPIO_SetPinState(LPC_GPIO_PORT, port, pin, false);
-    Chip_GPIO_SetPinDIR(LPC_GPIO_PORT, port, pin, true);
-    return AL;
+    DigitalOutput_t self = &Output[posicion];
+    self->port           = port;
+    self->pin            = pin;
+    self->ocupado        = true;
+    return self;
 }
 
-bool DigitalOutput_GetState(DigitalOutput_t AL) {
-    return Chip_GPIO_ReadPortBit(LPC_GPIO_PORT, AL->port, AL->pin);
+bool DigitalOutput_GetState(DigitalOutput_t self) {
+    return (self->port->IDR & (1 << self->pin))
 }
 
-void DigitalOutput_Activate(DigitalOutput_t AL) {
-    Chip_GPIO_SetPinState(LPC_GPIO_PORT, AL->port, AL->pin, true);
+void DigitalOutput_Activate(DigitalOutput_t self) {
+    self->port->BSRR = (1 << self->pin);
 }
-void DigitalOutput_Desactivate(DigitalOutput_t AL) {
-    Chip_GPIO_SetPinState(LPC_GPIO_PORT, AL->port, AL->pin, false);
+void DigitalOutput_Desactivate(DigitalOutput_t self) {
+    self->port->BSRR = (1 << self->pin) << 16;
 }
-void DigitalOutput_Toggle(DigitalOutput_t AL) {
-    Chip_GPIO_SetPinToggle(LPC_GPIO_PORT, AL->port, AL->pin);
+void DigitalOutput_Toggle(DigitalOutput_t self) {
+    uint32_t odr     = self->port->ODR;
+    self->port->BSRR = ((odr & (1 << self->pin)) << 16) | (~odr & (1 << self->pin));
 }
 
 /**  doxygen end group definition */

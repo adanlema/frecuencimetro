@@ -38,12 +38,13 @@
 /*==================[inclusions]=============================================*/
 #include <stdint.h>
 #include <stdbool.h>
+#include "stm32f103xb.h"
 typedef struct DigitalInput_s *  DigitalInput_t;
 typedef struct DigitalOutput_s * DigitalOutput_t;
 /*==================[macros]=================================================*/
 
 /*==================[typedef]================================================*/
-
+typedef struct GPIO_TypeDef * gpio_t;
 /*==================[external data declaration]==============================*/
 
 /*==================[external functions declaration]=========================*/
@@ -55,39 +56,39 @@ typedef struct DigitalOutput_s * DigitalOutput_t;
  * @param inverted Si trabajo con Pull-Down(false) o Pull-Up(true)
  * @return DigitalInput_t
  */
-DigitalInput_t DigitalInput_Create(uint8_t port, uint8_t pin, bool inverted);
+DigitalInput_t DigitalInput_Create(gpio_t port, uint8_t pin, bool inverted);
 /**
  * @brief Digital Input Get State
  * Devuelve el estado de la entrada.
- * @param AL Puntero al struct de la entrada.
+ * @param self Puntero al struct de la entrada.
  * @return true Si se encuentra activo.
  * @return false Si no esta activo.
  */
-bool DigitalInput_GetState(DigitalInput_t AL);
+bool DigitalInput_GetState(DigitalInput_t self);
 /**
  * @brief Digital Input Has Change
  * Evalua si la entrada a cambiado.
- * @param AL Puntero al struct de la entrada.
+ * @param self Puntero al struct de la entrada.
  * @return true Si cambio.
  * @return false Si no cambio.
  */
-bool DigitalInput_HasChange(DigitalInput_t AL);
+bool DigitalInput_HasChange(DigitalInput_t self);
 /**
  * @brief Digital Input Has Activate
  * Evalua si la entrada a sido activada.
- * @param AL Puntero al struct de la entrada.
+ * @param self Puntero al struct de la entrada.
  * @return true Si se activo.
  * @return false Si no se activo.
  */
-bool DigitalInput_HasActivate(DigitalInput_t AL);
+bool DigitalInput_HasActivate(DigitalInput_t self);
 /**
  * @brief Digital Input Has Desactivate
  * Evalua si la entrada a sido desactivada.
- * @param AL Puntero al struct de la entrada.
+ * @param self Puntero al struct de la entrada.
  * @return true Si se desactivo.
  * @return false Si sigue activa.
  */
-bool DigitalInput_HasDesactivate(DigitalInput_t AL);
+bool DigitalInput_HasDesactivate(DigitalInput_t self);
 /**
  * @brief Digital Output Create
  * Crea una salida digital, en la cual debemos proporcionar el pin y puerto.
@@ -96,33 +97,33 @@ bool DigitalInput_HasDesactivate(DigitalInput_t AL);
  * @param pin Pin
  * @return DigitalOutput_t
  */
-DigitalOutput_t DigitalOutput_Create(uint8_t port, uint8_t pin);
+DigitalOutput_t DigitalOutput_Create(gpio_t port, uint8_t pin);
 /**
  * @brief Digital Output Get State
  * Devuelve el estado de la salida.
- * @param AL Puntero al struct de la salida.
+ * @param self Puntero al struct de la salida.
  * @return true Si se encuentra activo.
  * @return false Si no esta activo.
  */
-bool DigitalOutput_GetState(DigitalOutput_t AL);
+bool DigitalOutput_GetState(DigitalOutput_t self);
 /**
  * @brief Digital Output Activate
  * Activa la salida solicitada.
- * @param AL Puntero a la salida digital.
+ * @param self Puntero a la salida digital.
  */
-void DigitalOutput_Activate(DigitalOutput_t AL);
+void DigitalOutput_Activate(DigitalOutput_t self);
 /**
  * @brief Digital Output Desactivate
  * Desactiva la salida solicitada.
- * @param AL Puntero a la salida digital.
+ * @param self Puntero a la salida digital.
  */
-void DigitalOutput_Desactivate(DigitalOutput_t AL);
+void DigitalOutput_Desactivate(DigitalOutput_t self);
 /**
  * @brief Digital Output Toggle
  * Cambia el estado de la salida proporcionada.
- * @param AL Puntero a la salida digital.
+ * @param self Puntero a la salida digital.
  */
-void DigitalOutput_Toggle(DigitalOutput_t AL);
+void DigitalOutput_Toggle(DigitalOutput_t self);
 /** @ doxygen end group definition */
 /** @ doxygen end group definition */
 /** @ doxygen end group definition */

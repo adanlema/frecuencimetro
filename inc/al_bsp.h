@@ -10,10 +10,9 @@
 
 /*==================[typedef]================================================*/
 typedef struct board_s {
-    DigitalInput_t  CH1;
-    DigitalOutput_t lcd_rs;
-    DigitalOutput_t lcd_en;
-    lcd_t           lcd;
+    DigitalInput_t CH1;
+    DigitalInput_t CH2;
+    lcd_t          lcd;
 } * board_t;
 /*==================[external data declaration]==============================*/
 

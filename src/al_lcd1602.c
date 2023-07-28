@@ -4,7 +4,6 @@
 /*==================[inclusions]=============================================*/
 #include <stdio.h>
 #include <stdbool.h>
-#include <stm32f1xx.h>
 #include <string.h>
 
 #include "al_lcd1602.h"
