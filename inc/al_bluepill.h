@@ -21,17 +21,20 @@
 #define ENABLE_PORT   1
 #define ENABLE_PIN    1
 #define ENABLE_FUNC   1
+#define ENABLE_BIT    0
 #define ENABLE_MASK   ENABLE_PIN
 
 #define RESET_PORT    1
 #define RESET_PIN     1
 #define RESET_FUNC    1
+#define RESET_BIT     1
 #define RESET_MASK    RESET_PIN
 
-#define LCD_0_PORT    1
-#define LCD_0_PIN     1
-#define LCD_0_FUNC    1
-#define LCD_0_MASK    LCD_0_PIN
+#define LCD_A0_PORT   1
+#define LCD_A0_PIN    1
+#define LCD_A0_FUNC   1
+#define LCD_A0_BIT    1
+#define LCD_A0_MASK   LCD_A0_PIN
 
 #define CH1_PORT      GPIOA
 #define CH1_PIN       0

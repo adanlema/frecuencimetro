@@ -8,7 +8,7 @@
 /*==================[macros]=================================================*/
 
 /*==================[typedef]================================================*/
-typedef struct DigitalPin * DigitalPin_pt;
+typedef struct DigitalPin * DigitalPin_t;
 /*==================[external data declaration]==============================*/
 
 /*==================[external functions declaration]=========================*/
@@ -19,15 +19,15 @@ typedef struct DigitalPin * DigitalPin_pt;
  * @param port Puerto
  * @param pin Pin
  * @param modo configurar en modo GPIO,UART,PWM,etc
- * @return DigitalPin_pt Puntero a la estructura.
+ * @return DigitalPin_t Puntero a la estructura.
  */
-DigitalPin_pt DigitalPin_Create(uint8_t port, uint8_t pin, uint32_t modo);
+DigitalPin_t DigitalPin_Create(uint8_t port, uint8_t pin, uint32_t modo);
 /**
  * @brief Digital Pin GPIO
  * Configura el pin proporcionado como GPIO.
  * @param AL Puntero al pin proporcionado.
  */
-void DigitalPin_GPIO(DigitalPin_pt AL);
+void DigitalPin_GPIO(DigitalPin_t AL);
 
 /** @ doxygen end group definition */
 /** @ doxygen end group definition */

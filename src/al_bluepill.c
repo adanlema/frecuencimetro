@@ -2,6 +2,8 @@
 
 /*==================[inclusions]=============================================*/
 #include "al_bluepill.h"
+#include "stm32f1xx.h"
+#include "stm32f103xb.h"
 /*==================[macros and definitions]=================================*/
 
 /*==================[internal data declaration]==============================*/

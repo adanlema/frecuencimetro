@@ -33,13 +33,11 @@ static lcd_t LcdAllocate(void) {
 
 /*==================[external functions definition]==========================*/
 
-lcd_t LcdCreate(board_t board, lcd_driver_t driver) {
+lcd_t LcdCreate(lcd_driver_t driver) {
     lcd_t self = LcdAllocate();
     if (self) {
         memset(self->memf1, 0, sizeof(self->memf1));
         memset(self->memf2, 0, sizeof(self->memf2));
-        self->enable = board->lcd_en;
-        self->reset  = board->lcd_rs;
         memcpy(self->driver, driver, sizeof(self->driver));
     }
     return self;

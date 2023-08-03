@@ -19,7 +19,7 @@ typedef struct lcd_driver_s {
 /*==================[external data declaration]==============================*/
 
 /*==================[external functions declaration]=========================*/
-lcd_t LcdCreate(board_t board, lcd_driver_t driver);
+lcd_t LcdCreate(lcd_driver_t driver);
 void  LcdWrite(lcd_t lcd, const char * cadena, const uint32_t size, const uint8_t fila,
                const uint8_t columna);
 void  LcdClear(lcd_t lcd, uint32_t size);

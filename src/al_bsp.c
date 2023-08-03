@@ -3,13 +3,15 @@
 /*==================[inclusions]=============================================*/
 #include "al_bsp.h"
 #include "al_gpio.h"
+#include "al_config_pin.h"
 #include "al_bluepill.h"
+#include "al_lcd1602.h"
 #include "stm32f1xx.h"
 #include "stm32f103xb.h"
 /*==================[macros and definitions]=================================*/
 
 /*==================[internal data declaration]==============================*/
-static board_t BoardAllocate();
+static board_t BoardAllocate(void);
 /*==================[internal functions declaration]=========================*/
 
 /*==================[internal data definition]===============================*/
@@ -17,12 +19,17 @@ static board_t BoardAllocate();
 /*==================[external data definition]===============================*/
 
 /*==================[internal functions definition]==========================*/
-static board_t BoardAllocate() {
+static board_t BoardAllocate(void) {
     static board_s board = {0};
     board_t        self  = &board;
     return self;
 }
 
+static void PinConfig(void) {
+    DigitalPin_t a0 = DigitalPin_Create(LCD_A0_PORT, LCD_A0_PIN, LCD_A0_FUNC);
+
+    DigitalPin_GPIO(a0);
+}
 // static void LcdInit(void) {
 //     RCC->APB2ENR |= (0b11 << 2);
 //     GPIOA->CRL = 0x22222222;
@@ -102,6 +109,7 @@ board_t BoardCreate() {
     BluePillInit();
     self->CH1 = DigitalInput_Create(CH1_PORT, CH1_BIT, false);
     self->CH2 = DigitalInput_Create(CH2_PORT, CH2_BIT, false);
+    self->lcd = LcdCreate();
     return self;
 }
 
